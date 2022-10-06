@@ -37,6 +37,10 @@ function App() {
     getData();
   }, []);
 
+  const onSubmit = (e) => {
+    e.preventDefault();
+  }
+
   const onBuckChange = (value, _, values) => {
     if (Number.isNaN(Number(value))) {
       setSats(satsPerFiat.toLocaleString());
@@ -51,7 +55,7 @@ function App() {
     }
     let numSats = parseInt(value * (100000000 / fiatExchangeRate));
     setSats(numSats.toLocaleString());
-    let cuckbuck = (value == 1) ? 'cuck-buck' : 'cuck-bucks';
+    let cuckbuck = (value === 1) ? 'cuck-buck' : 'cuck-bucks';
     setBuckText(`How many sats in ${Number(value).toLocaleString()} ${cuckbuck}?`);
     setClassName("is-valid");
   }
@@ -85,7 +89,7 @@ function App() {
                 <div className="container-fluid">
                   <div className="row justify-content-center">
                     <div className="col-md-4">
-                      <form className="needs-validation display-1">
+                      <form className="needs-validation display-1" onSubmit={onSubmit}>
                         <CurrencyInput
                           prefix={prefix}
                           placeholder="Enter an amount in cuck-bucks"
