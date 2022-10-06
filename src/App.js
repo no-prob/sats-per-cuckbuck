@@ -8,6 +8,7 @@ import CurrencyInput from 'react-currency-input-field';
 
 
 function App() {
+  const defaultBuckText = 'How many sats in a cuck-buck?';
   const currencies = ["USD", "EUR"];
   const [selectedOption, setSelectedOption] = useState(currencies[0]);
   const [isLoading, setIsLoading] = useState(true);
@@ -16,8 +17,9 @@ function App() {
   const [fiatExchangeRate, setFiatExchangeRate] = useState(0);
   const [fiat, setFiat] = useState(1);
   const [className, setClassName] = useState('');
+  const [buckText, setBuckText] = useState(defaultBuckText);
 
-  const limit = 100000000;
+  const limit = 10000000000;
   const prefix = '$'; // '£'
 
   useEffect(() => {
@@ -29,7 +31,7 @@ function App() {
       setFiatExchangeRate(response.data.bitcoin.usd)
       let numSats = parseInt(100000000 / response.data.bitcoin.usd)
       setSatsPerFiat(numSats);
-      setSats(numSats);
+      setSats(numSats.toLocaleString());
       setIsLoading(false);
     };
     getData();
@@ -37,53 +39,66 @@ function App() {
 
   const onBuckChange = (value, _, values) => {
     if (Number.isNaN(Number(value))) {
-      setSats(satsPerFiat);
+      setSats(satsPerFiat.toLocaleString());
       setClassName("");
+      setBuckText(defaultBuckText);
       return;
     }
-    let price = parseInt(value * fiatExchangeRate);
     if (Number(value) > limit) {
       setClassName('is-invalid');
       setSats("Error");
       return;
     }
-    setSats(price);
+    let numSats = parseInt(value * (100000000 / fiatExchangeRate));
+    setSats(numSats.toLocaleString());
+    let cuckbuck = (value == 1) ? 'cuck-buck' : 'cuck-bucks';
+    setBuckText(`How many sats in ${Number(value).toLocaleString()} ${cuckbuck}?`);
     setClassName("is-valid");
   }
 
   return (
-    <div className="container-fluid">
-      <div className="container mt-4">
-        <img
-          className="center"
-          src="https://assets.coingecko.com/coins/images/1/large/bitcoin.png?1547033579"
-          alt="BTC"
-        />
-      </div>
-      <div className="container mt-4">
-        {isLoading ? (
-            <Spinner />
-          ) : (
-            <>
-              <SatsDisplay
-                sats={sats}
-                //msg="(Sats per cuck-buck)"
-                msg=""
-              />
-              <div className="container-sm">
-                <div className="row justify-content-center">
-                  <form className="needs-validation col-md-4 text-center display-1">
-                    <CurrencyInput
-                      prefix={prefix}
-                      placeholder="Enter an amount in cuck-bucks"
-                      className={`form-control ${className}`}
-                      onValueChange={onBuckChange}
-                    />
-                  </form>
+    <div className="container">
+      <div className="row vertical-center">
+        <div className="col-12 d-flex justify-content-center">
+          <img
+            className="center"
+            src="https://assets.coingecko.com/coins/images/1/large/bitcoin.png?1547033579"
+            alt="BTC"
+          />
+        </div>
+        <div className="col">
+          {isLoading ? (
+              <Spinner />
+            ) : (
+              <>
+                <div className="container-fluid">
+                  <div className="row justify-content-center">
+                    <div className="col-md text-center display-6">
+                      <p>{buckText}</p>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </>
-        )}
+                <SatsDisplay
+                  sats={sats}
+                  msg=""
+                />
+                <div className="container-fluid">
+                  <div className="row justify-content-center">
+                    <div className="col-md-4">
+                      <form className="needs-validation display-1">
+                        <CurrencyInput
+                          prefix={prefix}
+                          placeholder="Enter an amount in cuck-bucks"
+                          className={`form-control ${className}`}
+                          onValueChange={onBuckChange}
+                        />
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </>
+          )}
+        </div>
       </div>
     </div>
   );
