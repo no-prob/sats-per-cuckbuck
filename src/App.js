@@ -2,7 +2,6 @@ import './App.css';
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { Spinner } from "./components/Spinner";
-import CurrencySelector from "./components/CurrencySelector";
 import SatsDisplay from "./components/SatsDisplay";
 import CurrencyInput from 'react-currency-input-field';
 
@@ -10,12 +9,11 @@ import CurrencyInput from 'react-currency-input-field';
 function App() {
   const defaultBuckText = 'How many sats in a cuck-buck?';
   const currencies = ["USD", "EUR"];
-  const [selectedOption, setSelectedOption] = useState(currencies[0]);
+  const [selectedOption] = useState(currencies[0]);
   const [isLoading, setIsLoading] = useState(true);
   const [sats, setSats] = useState(0);
   const [satsPerFiat, setSatsPerFiat] = useState(0);
   const [fiatExchangeRate, setFiatExchangeRate] = useState(0);
-  const [fiat, setFiat] = useState(1);
   const [className, setClassName] = useState('');
   const [buckText, setBuckText] = useState(defaultBuckText);
 
@@ -97,6 +95,13 @@ function App() {
                           onValueChange={onBuckChange}
                         />
                       </form>
+                    </div>
+                  </div>
+                </div>
+                <div className="postscript">
+                  <div className="row justify-content-center">
+                    <div className="col-md text-center display-1">
+                      <h6>(Based on {fiatExchangeRate} {selectedOption} per bitcoin)</h6>
                     </div>
                   </div>
                 </div>
